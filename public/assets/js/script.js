@@ -463,7 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 3. Load custom Testimonials
+    // 3. Load custom Testimonials (Disabled in favor of database storage)
+    /*
     const customTestimonials = JSON.parse(localStorage.getItem('aerovia_testimonials'));
     if (customTestimonials && customTestimonials.length > 0) {
       const testimonialTrack = Array.from(document.querySelectorAll('.infinite-slider-track')).find(track => track.querySelector('.testimonial-box'));
@@ -488,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     }
+    */
 
     // 4. Load custom Scenery & Landscapes
     const customScenery = JSON.parse(localStorage.getItem('aerovia_scenery'));

@@ -77,4 +77,10 @@
       <button class="btn btn-primary btn-centered" onclick="closeModal()">Close</button>
     </div>
   </div>
+
+  <script>
+    window.serverTestimonials = @json($testimonials);
+    window.csrfToken = '{{ csrf_token() }}';
+    window.storeTestimonialUrl = '{{ route("admin.testimonials.store") }}';
+  </script>
 @endsection

@@ -333,65 +333,37 @@
 
       <div class="infinite-slider-wrapper" style="margin-top: 3rem;">
         <div class="infinite-slider-track">
-          <!-- Testimonial 1 -->
-          <div class="testimonial-box">
-            <p class="testimonial-text">"Aerovia made our trip to Poland & Czechia completely effortless! The custom
-              itinerary was flawless and the tour guide care was exceptional."</p>
-            <div class="testimonial-profile">
-              <img loading="lazy"
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fm=webp&fit=crop&w=200&q=80"
-                alt="Sarah Connor" class="testimonial-avatar-img">
-              <div class="testimonial-details">
-                <h5>Sarah Connor</h5>
-                <p>Frequent Explorer</p>
+          @foreach($testimonials as $test)
+            <div class="testimonial-box">
+              <p class="testimonial-text">"{{ $test->text }}"</p>
+              <div class="testimonial-profile">
+                <img loading="lazy"
+                  src="{{ $test->avatar }}"
+                  alt="{{ $test->name }}" class="testimonial-avatar-img"
+                  onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fm=webp&fit=crop&w=200&q=80'">
+                <div class="testimonial-details">
+                  <h5>{{ $test->name }}</h5>
+                  <p>{{ $test->role }}</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Testimonial 2 -->
-          <div class="testimonial-box">
-            <p class="testimonial-text">"Our family tour in Norway was unforgettable. Everything from private fjord
-              cruises to luxury lodging was arranged with deep personal care."</p>
-            <div class="testimonial-profile">
-              <img loading="lazy"
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fm=webp&fit=crop&w=200&q=80"
-                alt="Michael Vance" class="testimonial-avatar-img">
-              <div class="testimonial-details">
-                <h5>Michael Vance</h5>
-                <p>Corporate Traveler</p>
+          @endforeach
+          {{-- Render twice for continuous loop --}}
+          @foreach($testimonials as $test)
+            <div class="testimonial-box">
+              <p class="testimonial-text">"{{ $test->text }}"</p>
+              <div class="testimonial-profile">
+                <img loading="lazy"
+                  src="{{ $test->avatar }}"
+                  alt="{{ $test->name }}" class="testimonial-avatar-img"
+                  onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fm=webp&fit=crop&w=200&q=80'">
+                <div class="testimonial-details">
+                  <h5>{{ $test->name }}</h5>
+                  <p>{{ $test->role }}</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Testimonial 3 -->
-          <div class="testimonial-box">
-            <p class="testimonial-text">"Aerovia's 40+ years heritage shines through in every detail. Their team handled
-              our Schengen visa and flight bookings without a hitch."</p>
-            <div class="testimonial-profile">
-              <img loading="lazy"
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fm=webp&fit=crop&w=200&q=80"
-                alt="David Miller" class="testimonial-avatar-img">
-              <div class="testimonial-details">
-                <h5>David Miller</h5>
-                <p>Verified Guest</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Clones for Infinite Loop -->
-          <div class="testimonial-box">
-            <p class="testimonial-text">"Aerovia made our trip to Poland & Czechia completely effortless! The custom
-              itinerary was flawless and the tour guide care was exceptional."</p>
-            <div class="testimonial-profile">
-              <img loading="lazy"
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fm=webp&fit=crop&w=200&q=80"
-                alt="Sarah Connor" class="testimonial-avatar-img">
-              <div class="testimonial-details">
-                <h5>Sarah Connor</h5>
-                <p>Frequent Explorer</p>
-              </div>
-            </div>
-          </div>
+          @endforeach
         </div>
       </div>
     </section>

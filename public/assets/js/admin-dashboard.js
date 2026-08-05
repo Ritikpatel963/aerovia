@@ -445,9 +445,13 @@ const defaultTestimonials = [
 let testimonialsList = [];
 
 function loadTestimonials() {
-  testimonialsList = JSON.parse(localStorage.getItem('aerovia_testimonials'));
-  if (!testimonialsList || testimonialsList.length === 0) {
-    testimonialsList = [...defaultTestimonials];
+  if (typeof window.serverTestimonials !== 'undefined') {
+    testimonialsList = window.serverTestimonials;
+  } else {
+    testimonialsList = JSON.parse(localStorage.getItem('aerovia_testimonials'));
+    if (!testimonialsList || testimonialsList.length === 0) {
+      testimonialsList = [...defaultTestimonials];
+    }
   }
   renderTestimonialCards();
 }
@@ -512,36 +516,84 @@ function handleAvatarFileSelectForIndex(input, index) {
   }
 }
 
-function addNewTestimonialCard() {
+async function addNewTestimonialCard() {
   const name = document.getElementById('new-test-name').value.trim();
   const role = document.getElementById('new-test-role').value.trim();
   const text = document.getElementById('new-test-text').value.trim();
-  let avatar = document.getElementById('new-test-avatar-url').value.trim();
+  const avatarUrl = document.getElementById('new-test-avatar-url').value.trim();
+  const avatarFileInput = document.getElementById('new-test-avatar-file');
 
-  if (!avatar) {
-    avatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fm=webp&fit=crop&w=200&q=80';
+  if (!name || !role || !text) {
+    alert('Please fill out Name, Role, and Feedback fields.');
+    return;
   }
 
-  if (name && role && text) {
-    testimonialsList.push({ name, role, text, avatar });
-    renderTestimonialCards();
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('role', role);
+  formData.append('text', text);
+  formData.append('avatar_url', avatarUrl);
+  if (avatarFileInput.files[0]) {
+    formData.append('avatar_file', avatarFileInput.files[0]);
+  }
 
-    // Reset Form
-    document.getElementById('new-testimonial-form').reset();
-    document.getElementById('file-chosen-label').textContent = 'No file chosen';
-    updateAvatarPreview('');
+  try {
+    const response = await fetch(window.storeTestimonialUrl || '/admin/testimonials', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': window.csrfToken || ''
+      },
+      body: formData
+    });
+    const data = await response.json();
+    if (data.success) {
+      testimonialsList.push(data.testimonial);
+      renderTestimonialCards();
+
+      // Reset Form
+      document.getElementById('new-testimonial-form').reset();
+      document.getElementById('file-chosen-label').textContent = 'No file chosen';
+      updateAvatarPreview('');
+    } else {
+      alert('Error saving testimonial: ' + (data.message || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Failed to save testimonial');
   }
 }
 
-function removeTestimonialCard(index) {
+async function removeTestimonialCard(index) {
+  const testimonial = testimonialsList[index];
+  if (!testimonial) return;
+
   if (confirm("Are you sure you want to remove this testimonial?")) {
+    if (testimonial.id) {
+      try {
+        const response = await fetch(`/admin/testimonials/${testimonial.id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': window.csrfToken || '',
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        if (!data.success) {
+          alert('Error deleting testimonial: ' + (data.message || 'Unknown error'));
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Failed to delete testimonial');
+        return;
+      }
+    }
     testimonialsList.splice(index, 1);
     renderTestimonialCards();
   }
 }
 
 function saveTestimonials() {
-  localStorage.setItem('aerovia_testimonials', JSON.stringify(testimonialsList));
   const successModal = document.getElementById('success-modal');
   if (successModal) successModal.style.display = 'flex';
 }
