@@ -4,12 +4,19 @@
 @section('page_subtitle', 'Choose local media files to update banners and videos across all pages')
 
 @section('header_actions')
-  <button class="btn btn-primary" onclick="saveBannerAssets()"><i class="fas fa-save"></i> Save Banners</button>
+  <button class="btn btn-primary" onclick="document.getElementById('banner-details-form').submit();"><i class="fas fa-save"></i> Save Banners</button>
 @endsection
 
 @section('content')
       <div class="flex-col">
-        <form id="banner-details-form" onsubmit="event.preventDefault();">
+        
+        @if(session('success'))
+          <div class="alert" style="background: rgba(0, 255, 0, 0.1); color: #00ff00; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+          </div>
+        @endif
+        <form id="banner-details-form" method="POST" action="{{ route('admin.banners.store') }}" enctype="multipart/form-data">
+          @csrf
           
           <!-- Home Page Banners -->
           <div class="form-panel">
@@ -23,11 +30,11 @@
                   <div class="upload-dropzone" onclick="document.getElementById('banner-home-video-file').click()">
                     <i class="fas fa-video"></i>
                     <span>Click to Choose Video File</span>
-                    <input type="file" id="banner-home-video-file" class="file-input-hidden" accept="video/*">
+                    <input type="file" id="banner-home-video-file" name="home_video" class="file-input-hidden" accept="video/*" onchange="previewMedia(this, 'preview-home-video')">
                   </div>
                   <div class="preview-container">
                     <video class="preview-media" id="preview-home-video" autoplay muted loop>
-                      <source src="{{ asset('assets/videos/Sunset-Banner.mov') }}" type="video/mp4">
+                      <source src="{{ isset($settings['home_video']) ? asset('storage/' . $settings['home_video']) : '' }}" type="video/mp4">
                     </video>
                     <div class="preview-label-tag">Video</div>
                   </div>
@@ -41,10 +48,10 @@
                   <div class="upload-dropzone" onclick="document.getElementById('banner-home-poster-file').click()">
                     <i class="fas fa-image"></i>
                     <span>Click to Choose Poster Image</span>
-                    <input type="file" id="banner-home-poster-file" class="file-input-hidden" accept="image/*">
+                    <input type="file" id="banner-home-poster-file" name="home_poster" class="file-input-hidden" accept="image/*" onchange="previewMedia(this, 'preview-home-poster')">
                   </div>
                   <div class="preview-container">
-                    <img class="preview-media" id="preview-home-poster" src="{{ asset('assets/images/video-snapshot.jpg') }}" alt="Video Poster">
+                    <img class="preview-media" id="preview-home-poster" src="{{ isset($settings['home_poster']) ? asset('storage/' . $settings['home_poster']) : '' }}" alt="Video Poster">
                     <div class="preview-label-tag">Poster</div>
                   </div>
                 </div>
@@ -65,10 +72,10 @@
                   <div class="upload-dropzone" onclick="document.getElementById('banner-about-file').click()">
                     <i class="fas fa-image"></i>
                     <span>Choose About Banner</span>
-                    <input type="file" id="banner-about-file" class="file-input-hidden" accept="image/*">
+                    <input type="file" id="banner-about-file" name="about_banner" class="file-input-hidden" accept="image/*" onchange="previewMedia(this, 'preview-about')">
                   </div>
                   <div class="preview-container">
-                    <img class="preview-media" id="preview-about" src="{{ asset('assets/images/about-hero.webp') }}" alt="About Banner">
+                    <img class="preview-media" id="preview-about" src="{{ isset($settings['about_banner']) ? asset('storage/' . $settings['about_banner']) : '' }}" alt="About Banner">
                     <div class="preview-label-tag">About</div>
                   </div>
                 </div>
@@ -81,10 +88,10 @@
                   <div class="upload-dropzone" onclick="document.getElementById('banner-services-file').click()">
                     <i class="fas fa-image"></i>
                     <span>Choose Services Banner</span>
-                    <input type="file" id="banner-services-file" class="file-input-hidden" accept="image/*">
+                    <input type="file" id="banner-services-file" name="services_banner" class="file-input-hidden" accept="image/*" onchange="previewMedia(this, 'preview-services')">
                   </div>
                   <div class="preview-container">
-                    <img class="preview-media" id="preview-services" src="{{ asset('assets/images/services-hero.webp') }}" alt="Services Banner">
+                    <img class="preview-media" id="preview-services" src="{{ isset($settings['services_banner']) ? asset('storage/' . $settings['services_banner']) : '' }}" alt="Services Banner">
                     <div class="preview-label-tag">Services</div>
                   </div>
                 </div>
@@ -97,10 +104,10 @@
                   <div class="upload-dropzone" onclick="document.getElementById('banner-tours-file').click()">
                     <i class="fas fa-image"></i>
                     <span>Choose Tours Banner</span>
-                    <input type="file" id="banner-tours-file" class="file-input-hidden" accept="image/*">
+                    <input type="file" id="banner-tours-file" name="tours_banner" class="file-input-hidden" accept="image/*" onchange="previewMedia(this, 'preview-tours')">
                   </div>
                   <div class="preview-container">
-                    <img class="preview-media" id="preview-tours" src="{{ asset('assets/images/tours-hero.webp') }}" alt="Tours Banner">
+                    <img class="preview-media" id="preview-tours" src="{{ isset($settings['tours_banner']) ? asset('storage/' . $settings['tours_banner']) : '' }}" alt="Tours Banner">
                     <div class="preview-label-tag">Tours</div>
                   </div>
                 </div>
@@ -113,10 +120,10 @@
                   <div class="upload-dropzone" onclick="document.getElementById('banner-contact-file').click()">
                     <i class="fas fa-image"></i>
                     <span>Choose Contact Banner</span>
-                    <input type="file" id="banner-contact-file" class="file-input-hidden" accept="image/*">
+                    <input type="file" id="banner-contact-file" name="contact_banner" class="file-input-hidden" accept="image/*" onchange="previewMedia(this, 'preview-contact')">
                   </div>
                   <div class="preview-container">
-                    <img class="preview-media" id="preview-contact" src="{{ asset('assets/images/contact-hero.webp') }}" alt="Contact Banner">
+                    <img class="preview-media" id="preview-contact" src="{{ isset($settings['contact_banner']) ? asset('storage/' . $settings['contact_banner']) : '' }}" alt="Contact Banner">
                     <div class="preview-label-tag">Contact</div>
                   </div>
                 </div>
@@ -153,4 +160,40 @@
       <button class="btn btn-primary btn-centered" onclick="closeModal()">Close Panel</button>
     </div>
   </div>
+
 @endsection
+
+@section('scripts')
+<script>
+  function previewMedia(input, previewId) {
+    if (input.files && input.files[0]) {
+      const url = URL.createObjectURL(input.files[0]);
+      const preview = document.getElementById(previewId);
+      if (preview.tagName.toLowerCase() === 'video') {
+        preview.querySelector('source').src = url;
+        preview.load();
+      } else {
+        preview.src = url;
+      }
+    }
+  }
+
+  // Pre-load Scenery Array from DB
+  document.addEventListener('DOMContentLoaded', () => {
+      const serverSceneryList = {!! json_encode($sceneryList ?? []) !!};
+      if (serverSceneryList.length > 0) {
+          sceneryList = [];
+          const container = document.getElementById('scenery-editor-container');
+          if (container) container.innerHTML = '';
+          
+          serverSceneryList.forEach(item => {
+              // Check if image is an external URL or an internal uploaded path
+              let imageUrl = item.image;
+              if (imageUrl && !imageUrl.startsWith('http')) {
+                  imageUrl = "{{ asset('storage') }}/" + imageUrl;
+              }
+              addNewSceneryItem(item.title, item.subtitle, imageUrl, item.image);
+          });
+      }
+  });
+</script>

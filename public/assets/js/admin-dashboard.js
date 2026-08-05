@@ -166,15 +166,15 @@ function addNewItineraryDay(titleVal = '', bannerVal = '', descVal = '') {
     <div class="form-grid-2">
       <div class="form-group form-group-full">
         <label class="field-label">Day Title (e.g. Thu, Oct 15 — Flight Departure)</label>
-        <input type="text" class="field-input day-title-input" placeholder="Day Title & Theme" value="${titleVal}">
+        <input type="text" name="itinerary[title][]" class="field-input day-title-input" placeholder="Day Title & Theme" value="${titleVal}">
       </div>
       <div class="form-group form-group-full">
         <label class="field-label">Flight/Transit Banner (Optional)</label>
-        <input type="text" class="field-input day-banner-input" placeholder="e.g. LOT LO72 | Depart Delhi 08:00..." value="${bannerVal}">
+        <input type="text" name="itinerary[banner][]" class="field-input day-banner-input" placeholder="e.g. LOT LO72 | Depart Delhi 08:00..." value="${bannerVal}">
       </div>
       <div class="form-group form-group-full">
         <label class="field-label">Day Description & Excursions</label>
-        <textarea class="field-input day-desc-input" placeholder="Outline activities, visits, and hotels...">${descVal}</textarea>
+        <textarea name="itinerary[description][]" class="field-input day-desc-input" placeholder="Outline activities, visits, and hotels...">${descVal}</textarea>
       </div>
     </div>
   `;
@@ -640,11 +640,11 @@ function renderSceneryItems() {
       <div class="form-grid-2" style="gap: 0.75rem;">
         <div class="form-group form-group-full">
           <label class="field-label">Scenery Title</label>
-          <input type="text" class="field-input scenery-title-input" placeholder="e.g. Poland & Czechia" value="${scenery.title}">
+          <input type="text" class="field-input scenery-title-input" name="scenery[${index}][title]" placeholder="e.g. Poland & Czechia" value="${scenery.title}">
         </div>
         <div class="form-group form-group-full">
           <label class="field-label">Scenery Subtitle / Route</label>
-          <input type="text" class="field-input scenery-subtitle-input" placeholder="e.g. 10D/11N Expedition" value="${scenery.subtitle}">
+          <input type="text" class="field-input scenery-subtitle-input" name="scenery[${index}][subtitle]" placeholder="e.g. 10D/11N Expedition" value="${scenery.subtitle}">
         </div>
         <div class="form-group form-group-full">
           <label class="field-label">Scenery Image URL / Upload File</label>
@@ -652,13 +652,13 @@ function renderSceneryItems() {
             <div class="upload-dropzone" style="padding: 0.75rem;" onclick="document.getElementById('scenery-file-input-${index}').click()">
               <i class="fas fa-image" style="font-size: 1.1rem;"></i>
               <span style="font-size: 0.75rem;">Choose File</span>
-              <input type="file" id="scenery-file-input-${index}" class="file-input-hidden" accept="image/*" onchange="handleSceneryFileSelect(this, ${index})">
+              <input type="file" id="scenery-file-input-${index}" name="scenery[${index}][file]" class="file-input-hidden" accept="image/*" onchange="handleSceneryFileSelect(this, ${index})">
             </div>
             <div class="preview-container" style="height: 75px; width: 120px; flex-shrink: 0;">
-              <img class="preview-media" id="scenery-preview-${index}" src="${scenery.image}" alt="Scenery Preview" onerror="this.src='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fm=webp&fit=crop&w=800&q=80'">
+              <img class="preview-media" id="scenery-preview-${index}" src="${scenery.image}" alt="Scenery Preview">
             </div>
           </div>
-          <input type="text" id="scenery-url-${index}" class="field-input scenery-image-url" style="margin-top: 0.5rem;" placeholder="Or paste image web URL..." value="${scenery.image}">
+          <input type="text" id="scenery-url-${index}" name="scenery[${index}][image_url]" class="field-input scenery-image-url" style="margin-top: 0.5rem;" placeholder="Or paste image web URL..." value="${scenery.rawUrl || scenery.image}">
         </div>
       </div>
     `;
@@ -677,14 +677,15 @@ function handleSceneryFileSelect(input, index) {
   }
 }
 
-function addNewSceneryItem(title = '', subtitle = '', image = '') {
+function addNewSceneryItem(title = '', subtitle = '', image = '', rawUrl = '') {
   // Sync current DOM state first to avoid losing user inputs
   syncSceneryListFromDOM();
 
   sceneryList.push({
     title: title || 'New Location',
     subtitle: subtitle || 'Adventure Description',
-    image: image || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fm=webp&fit=crop&w=800&q=80'
+    image: image || '',
+    rawUrl: rawUrl
   });
 
   renderSceneryItems();
@@ -702,8 +703,15 @@ function syncSceneryListFromDOM() {
   boxes.forEach((box, index) => {
     const title = box.querySelector('.scenery-title-input').value.trim();
     const subtitle = box.querySelector('.scenery-subtitle-input').value.trim();
-    const image = box.querySelector('.scenery-image-url').value.trim();
-    list.push({ title, subtitle, image });
+    const imageInput = box.querySelector('.scenery-image-url');
+    const image = imageInput ? imageInput.value.trim() : '';
+    const rawUrl = image;
+    
+    // Attempt to retain original URL if present (so we don't break existing db paths)
+    const existingObj = sceneryList[index];
+    const finalImage = (existingObj && existingObj.image && existingObj.rawUrl === rawUrl) ? existingObj.image : image;
+
+    list.push({ title, subtitle, image: finalImage, rawUrl });
   });
   sceneryList = list;
 }

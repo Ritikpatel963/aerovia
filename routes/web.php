@@ -50,6 +50,8 @@ Route::get('/contact', function () {
 });
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\TourController;
+use App\Http\Controllers\Admin\BannerController;
 
 Route::prefix('admin')->group(function () {
     // Guest Routes
@@ -64,18 +66,19 @@ Route::prefix('admin')->group(function () {
     // Protected Admin Routes
     Route::middleware('auth')->group(function () {
         Route::get('/', function () {
-            return redirect('admin/dashboard');
+            return redirect()->route('admin.dashboard');
+        });
+
+        // Redirect old URL to new URL
+        Route::get('/add-tour', function () {
+            return redirect()->route('tours.create');
         });
 
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
-
-        Route::get('/add-tour', function () {
-            return view('admin.add-tour');
-        })->name('admin.add-tour');
+        // Tour Management
+        Route::get('/dashboard', [TourController::class, 'index'])->name('admin.dashboard');
+        Route::resource('tours', TourController::class)->except(['index', 'show']);
 
         Route::get('/settings', function () {
             return view('admin.settings');
@@ -85,8 +88,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/testimonials', [App\Http\Controllers\Admin\TestimonialController::class, 'store'])->name('admin.testimonials.store');
         Route::delete('/testimonials/{testimonial}', [App\Http\Controllers\Admin\TestimonialController::class, 'destroy'])->name('admin.testimonials.destroy');
 
-        Route::get('/banner-details', function () {
-            return view('admin.banner-details');
-        })->name('admin.banner-details');
+        Route::get('/banner-details', [BannerController::class, 'index'])->name('admin.banner-details');
+        Route::post('/banner-details', [BannerController::class, 'store'])->name('admin.banners.store');
     });
 });
