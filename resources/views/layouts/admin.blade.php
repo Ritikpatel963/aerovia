@@ -36,7 +36,7 @@
       <div class="menu-group">
         <a href="{{ url('admin/dashboard') }}" class="menu-link {{ request()->is('admin/dashboard') ? 'active' : '' }}"><i class="fas fa-tasks"></i> Tour Management</a>
         <div class="menu-sub-items">
-          <a href="{{ url('admin/add-tour') }}" class="menu-sub-link {{ request()->is('admin/add-tour') ? 'active' : '' }}"><i class="fas fa-plus-circle"></i> Add Tour</a>
+          <a href="{{ route('tours.create') }}" class="menu-sub-link {{ request()->routeIs('tours.create') || request()->routeIs('tours.edit') ? 'active' : '' }}"><i class="fas fa-plus-circle"></i> Add Tour</a>
         </div>
       </div>
       <a href="{{ url('admin/banner-details') }}" class="menu-link {{ request()->is('admin/banner-details') ? 'active' : '' }}"><i class="fas fa-images"></i> Banner Details</a>

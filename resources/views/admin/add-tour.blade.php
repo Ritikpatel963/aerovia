@@ -5,7 +5,7 @@
 
 @section('header_actions')
   <button class="btn btn-outline" onclick="loadSampleData()"><i class="fas fa-magic"></i> Auto-Fill Sample</button>
-  <button class="btn btn-primary" onclick="publishTour()"><i class="fas fa-paper-plane"></i> Publish Tour</button>
+  <button class="btn btn-primary" onclick="document.getElementById('add-tour-form').submit();"><i class="fas fa-paper-plane"></i> Publish Tour</button>
 @endsection
 
 @section('content')
@@ -19,7 +19,11 @@
           <button class="tab-btn" onclick="switchTab(4)">5. Terms & Docs</button>
         </div>
 
-        <form id="add-tour-form" onsubmit="event.preventDefault();">
+        <form id="add-tour-form" method="POST" action="{{ isset($tour) ? route('tours.update', $tour->id) : route('tours.store') }}">
+          @csrf
+          @if(isset($tour))
+            @method('PUT')
+          @endif
           <!-- TAB 1: General Info -->
           <div class="tab-content active" id="tab-0">
             <div class="form-panel">
@@ -28,32 +32,32 @@
               <div class="form-grid-2">
                 <div class="form-group form-group-full">
                   <label class="field-label" for="tour-title">Tour Title</label>
-                  <input type="text" id="tour-title" class="field-input" placeholder="e.g. Poland & Czechia Expedition">
+                  <input type="text" id="tour-title" name="title" value="{{ old('title', $tour->title ?? '') }}" class="field-input" placeholder="e.g. Poland & Czechia Expedition">
                 </div>
                 
                 <div class="form-group form-group-full">
                   <label class="field-label" for="tour-subtitle">Sub-text / Routing Overview</label>
-                  <textarea id="tour-subtitle" class="field-input" placeholder="e.g. Warsaw • Krakow • Zakopane • Prague..."></textarea>
+                  <textarea id="tour-subtitle" name="subtitle" class="field-input" placeholder="e.g. Warsaw • Krakow • Zakopane • Prague...">{{ old('subtitle', $tour->subtitle ?? '') }}</textarea>
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="tour-duration">Tour Duration</label>
-                  <input type="text" id="tour-duration" class="field-input" placeholder="e.g. 10D / 11N">
+                  <input type="text" id="tour-duration" name="duration" value="{{ old('duration', $tour->duration ?? '') }}" class="field-input" placeholder="e.g. 10D / 11N">
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="tour-accommodation">Accommodation Type</label>
-                  <input type="text" id="tour-accommodation" class="field-input" placeholder="e.g. 4 & 5 ★ Luxury Hotels">
+                  <input type="text" id="tour-accommodation" name="accommodation" value="{{ old('accommodation', $tour->accommodation ?? '') }}" class="field-input" placeholder="e.g. 4 & 5 ★ Luxury Hotels">
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="tour-start-date">Start Date</label>
-                  <input type="text" id="tour-start-date" class="field-input" placeholder="e.g. 15 OCT 2026">
+                  <input type="text" id="tour-start-date" name="start_date" value="{{ old('start_date', $tour->start_date ?? '') }}" class="field-input" placeholder="e.g. 15 OCT 2026">
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="tour-end-date">End Date</label>
-                  <input type="text" id="tour-end-date" class="field-input" placeholder="e.g. 25 OCT 2026">
+                  <input type="text" id="tour-end-date" name="end_date" value="{{ old('end_date', $tour->end_date ?? '') }}" class="field-input" placeholder="e.g. 25 OCT 2026">
                 </div>
               </div>
             </div>
@@ -68,7 +72,7 @@
                 <div class="form-group">
                   <label class="field-label" for="price-sharing">Sharing Occupancy Price</label>
                   <div class="input-icon-wrapper">
-                    <input type="text" id="price-sharing" class="field-input field-input-icon" placeholder="e.g. ₹ 3,49,999">
+                    <input type="text" id="price-sharing" name="price_sharing" value="{{ old('price_sharing', $tour->price_sharing ?? '') }}" class="field-input field-input-icon" placeholder="e.g. ₹ 3,49,999">
                     <i class="fas fa-indian-rupee-sign"></i>
                   </div>
                 </div>
@@ -76,19 +80,19 @@
                 <div class="form-group">
                   <label class="field-label" for="price-single">Single Supplement Extra</label>
                   <div class="input-icon-wrapper">
-                    <input type="text" id="price-single" class="field-input field-input-icon" placeholder="e.g. + ₹ 42,000">
+                    <input type="text" id="price-single" name="price_single" value="{{ old('price_single', $tour->price_single ?? '') }}" class="field-input field-input-icon" placeholder="e.g. + ₹ 42,000">
                     <i class="fas fa-plus"></i>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="discount-returning">Returning Customer Discount</label>
-                  <input type="text" id="discount-returning" class="field-input" placeholder="e.g. ₹ 19,999 OFF">
+                  <input type="text" id="discount-returning" name="discount_returning" value="{{ old('discount_returning', $tour->discount_returning ?? '') }}" class="field-input" placeholder="e.g. ₹ 19,999 OFF">
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="discount-early">Early Bird Discount</label>
-                  <input type="text" id="discount-early" class="field-input" placeholder="e.g. ₹ 9,999 OFF (Before July 20th)">
+                  <input type="text" id="discount-early" name="discount_early" value="{{ old('discount_early', $tour->discount_early ?? '') }}" class="field-input" placeholder="e.g. ₹ 9,999 OFF (Before July 20th)">
                 </div>
 
                 <div class="form-group form-group-full">
@@ -96,19 +100,19 @@
                   <div class="form-grid-2">
                     <div class="form-group">
                       <label class="field-label">Booking Seat Deposit</label>
-                      <input type="text" id="inst-deposit" class="field-input" placeholder="e.g. ₹ 50,000">
+                      <input type="text" id="inst-deposit" name="inst_deposit" value="{{ old('inst_deposit', $tour->inst_deposit ?? '') }}" class="field-input" placeholder="e.g. ₹ 50,000">
                     </div>
                     <div class="form-group">
                       <label class="field-label">1st Installment Details</label>
-                      <input type="text" id="inst-1" class="field-input" placeholder="e.g. ₹ 90,000 due Aug 3">
+                      <input type="text" id="inst-1" name="inst_1" value="{{ old('inst_1', $tour->inst_1 ?? '') }}" class="field-input" placeholder="e.g. ₹ 90,000 due Aug 3">
                     </div>
                     <div class="form-group">
                       <label class="field-label">2nd Installment Details</label>
-                      <input type="text" id="inst-2" class="field-input" placeholder="e.g. ₹ 90,000 due Sep 5">
+                      <input type="text" id="inst-2" name="inst_2" value="{{ old('inst_2', $tour->inst_2 ?? '') }}" class="field-input" placeholder="e.g. ₹ 90,000 due Sep 5">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Final Payment Details</label>
-                      <input type="text" id="inst-final" class="field-input" placeholder="e.g. ₹ 69,999 due Oct 5">
+                      <input type="text" id="inst-final" name="inst_final" value="{{ old('inst_final', $tour->inst_final ?? '') }}" class="field-input" placeholder="e.g. ₹ 69,999 due Oct 5">
                     </div>
                   </div>
                 </div>
@@ -128,19 +132,19 @@
                   <div class="form-grid-2">
                     <div class="form-group">
                       <label class="field-label">Route Title</label>
-                      <input type="text" id="flight1-route" class="field-input" placeholder="e.g. Kolkata to Delhi">
+                      <input type="text" id="flight1-route" name="flights[0][route]" value="{{ old('flights[0][route]', $tour->flights[0]['route'] ?? '') }}" class="field-input" placeholder="e.g. Kolkata to Delhi">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Airline / Flight Code</label>
-                      <input type="text" id="flight1-code" class="field-input" placeholder="e.g. IndiGo 6E5190">
+                      <input type="text" id="flight1-code" name="flights[0][code]" value="{{ old('flights[0][code]', $tour->flights[0]['code'] ?? '') }}" class="field-input" placeholder="e.g. IndiGo 6E5190">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Checked Baggage Allowance</label>
-                      <input type="text" id="flight1-baggage" class="field-input" placeholder="e.g. 15 kg">
+                      <input type="text" id="flight1-baggage" name="flights[0][baggage]" value="{{ old('flights[0][baggage]', $tour->flights[0]['baggage'] ?? '') }}" class="field-input" placeholder="e.g. 15 kg">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Cabin Hand Allowance</label>
-                      <input type="text" id="flight1-cabin" class="field-input" placeholder="e.g. 7 kg">
+                      <input type="text" id="flight1-cabin" name="flights[0][cabin]" value="{{ old('flights[0][cabin]', $tour->flights[0]['cabin'] ?? '') }}" class="field-input" placeholder="e.g. 7 kg">
                     </div>
                   </div>
                 </div>
@@ -151,19 +155,19 @@
                   <div class="form-grid-2">
                     <div class="form-group">
                       <label class="field-label">Route Title</label>
-                      <input type="text" id="flight2-route" class="field-input" placeholder="e.g. Delhi to Warsaw">
+                      <input type="text" id="flight2-route" name="flights[1][route]" value="{{ old('flights[1][route]', $tour->flights[1]['route'] ?? '') }}" class="field-input" placeholder="e.g. Delhi to Warsaw">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Airline / Flight Code</label>
-                      <input type="text" id="flight2-code" class="field-input" placeholder="e.g. Polish Airlines LOT LO72">
+                      <input type="text" id="flight2-code" name="flights[1][code]" value="{{ old('flights[1][code]', $tour->flights[1]['code'] ?? '') }}" class="field-input" placeholder="e.g. Polish Airlines LOT LO72">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Checked Baggage Allowance</label>
-                      <input type="text" id="flight2-baggage" class="field-input" placeholder="e.g. 23 kg">
+                      <input type="text" id="flight2-baggage" name="flights[1][baggage]" value="{{ old('flights[1][baggage]', $tour->flights[1]['baggage'] ?? '') }}" class="field-input" placeholder="e.g. 23 kg">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Cabin Hand Allowance</label>
-                      <input type="text" id="flight2-cabin" class="field-input" placeholder="e.g. 8 kg">
+                      <input type="text" id="flight2-cabin" name="flights[1][cabin]" value="{{ old('flights[1][cabin]', $tour->flights[1]['cabin'] ?? '') }}" class="field-input" placeholder="e.g. 8 kg">
                     </div>
                   </div>
                 </div>
@@ -174,19 +178,19 @@
                   <div class="form-grid-2">
                     <div class="form-group">
                       <label class="field-label">Route Title</label>
-                      <input type="text" id="flight3-route" class="field-input" placeholder="e.g. Prague to Delhi">
+                      <input type="text" id="flight3-route" name="flights[2][route]" value="{{ old('flights[2][route]', $tour->flights[2]['route'] ?? '') }}" class="field-input" placeholder="e.g. Prague to Delhi">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Airline / Flight Code</label>
-                      <input type="text" id="flight3-code" class="field-input" placeholder="e.g. Air Arabia (via Sharjah)">
+                      <input type="text" id="flight3-code" name="flights[2][code]" value="{{ old('flights[2][code]', $tour->flights[2]['code'] ?? '') }}" class="field-input" placeholder="e.g. Air Arabia (via Sharjah)">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Checked Baggage Allowance</label>
-                      <input type="text" id="flight3-baggage" class="field-input" placeholder="e.g. 23 kg">
+                      <input type="text" id="flight3-baggage" name="flights[2][baggage]" value="{{ old('flights[2][baggage]', $tour->flights[2]['baggage'] ?? '') }}" class="field-input" placeholder="e.g. 23 kg">
                     </div>
                     <div class="form-group">
                       <label class="field-label">Cabin Hand Allowance</label>
-                      <input type="text" id="flight3-cabin" class="field-input" placeholder="e.g. 7 kg">
+                      <input type="text" id="flight3-cabin" name="flights[2][cabin]" value="{{ old('flights[2][cabin]', $tour->flights[2]['cabin'] ?? '') }}" class="field-input" placeholder="e.g. 7 kg">
                     </div>
                   </div>
                 </div>
@@ -216,22 +220,22 @@
               <div class="form-grid-2">
                 <div class="form-group form-group-full">
                   <label class="field-label" for="tour-inclusions">Tour Cost Inclusions (One item per line)</label>
-                  <textarea id="tour-inclusions" class="field-input" placeholder="e.g. Return economy airfares&#10;Europe eSIM data&#10;4★ hotel accommodations..."></textarea>
+                  <textarea id="tour-inclusions" name="inclusions" class="field-input" placeholder="e.g. Return economy airfares&#10;Europe eSIM data&#10;4★ hotel accommodations...">{{ old('inclusions', $tour->inclusions ?? '') }}</textarea>
                 </div>
 
                 <div class="form-group form-group-full">
                   <label class="field-label" for="tour-exclusions">Tour Cost Exclusions & Terms (One item per line)</label>
-                  <textarea id="tour-exclusions" class="field-input" placeholder="e.g. Personal laundry shopping&#10;Standard hotel early check-in fees&#10;Itinerary modifications due to weather..."></textarea>
+                  <textarea id="tour-exclusions" name="exclusions" class="field-input" placeholder="e.g. Personal laundry shopping&#10;Standard hotel early check-in fees&#10;Itinerary modifications due to weather...">{{ old('exclusions', $tour->exclusions ?? '') }}</textarea>
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="tour-director">Tour Director Name</label>
-                  <input type="text" id="tour-director" class="field-input" placeholder="e.g. Mr. Dale Mogose">
+                  <input type="text" id="tour-director" name="director" value="{{ old('director', $tour->director ?? '') }}" class="field-input" placeholder="e.g. Mr. Dale Mogose">
                 </div>
 
                 <div class="form-group">
                   <label class="field-label" for="tour-director-phone">Director Contact Number</label>
-                  <input type="text" id="tour-director-phone" class="field-input" placeholder="e.g. +91 62890 06014">
+                  <input type="text" id="tour-director-phone" name="director_phone" value="{{ old('director_phone', $tour->director_phone ?? '') }}" class="field-input" placeholder="e.g. +91 62890 06014">
                 </div>
               </div>
             </div>
@@ -250,4 +254,19 @@
       <button class="btn btn-primary btn-centered" onclick="closeModal()">Close Panel</button>
     </div>
   </div>
+
+  @if(isset($tour) && is_array($tour->itinerary) && count($tour->itinerary) > 0)
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Clear dynamic itinerary first
+      const container = document.getElementById('dynamic-itinerary-container');
+      if (container) {
+        container.innerHTML = '';
+        @foreach($tour->itinerary as $day)
+          addNewItineraryDay("{{ addslashes($day['title'] ?? '') }}", "{{ addslashes($day['banner'] ?? '') }}", "{{ str_replace(["\r", "\n"], ['', '\n'], addslashes($day['description'] ?? '')) }}");
+        @endforeach
+      }
+    });
+  </script>
+  @endif
 @endsection
