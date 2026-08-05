@@ -337,10 +337,9 @@
             <div class="testimonial-box">
               <p class="testimonial-text">"{{ $test->text }}"</p>
               <div class="testimonial-profile">
-                <img loading="lazy"
-                  src="{{ $test->avatar }}"
-                  alt="{{ $test->name }}" class="testimonial-avatar-img"
-                  onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fm=webp&fit=crop&w=200&q=80'">
+                @if($test->avatar)
+                  <img loading="lazy" src="{{ $test->avatar }}" alt="{{ $test->name }}" class="testimonial-avatar-img">
+                @endif
                 <div class="testimonial-details">
                   <h5>{{ $test->name }}</h5>
                   <p>{{ $test->role }}</p>
@@ -353,10 +352,9 @@
             <div class="testimonial-box">
               <p class="testimonial-text">"{{ $test->text }}"</p>
               <div class="testimonial-profile">
-                <img loading="lazy"
-                  src="{{ $test->avatar }}"
-                  alt="{{ $test->name }}" class="testimonial-avatar-img"
-                  onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fm=webp&fit=crop&w=200&q=80'">
+                @if($test->avatar)
+                  <img loading="lazy" src="{{ $test->avatar }}" alt="{{ $test->name }}" class="testimonial-avatar-img">
+                @endif
                 <div class="testimonial-details">
                   <h5>{{ $test->name }}</h5>
                   <p>{{ $test->role }}</p>

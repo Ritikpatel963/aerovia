@@ -30,7 +30,7 @@ class TestimonialController extends Controller
             'avatar_file' => 'nullable|image|max:2048',
         ]);
 
-        $avatarUrl = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fm=webp&fit=crop&w=200&q=80';
+        $avatarUrl = null;
 
         if ($request->hasFile('avatar_file')) {
             $file = $request->file('avatar_file');
@@ -48,10 +48,7 @@ class TestimonialController extends Controller
             'avatar' => $avatarUrl,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'testimonial' => $testimonial,
-        ]);
+        return redirect()->route('admin.testimonials')->with('success', 'Testimonial added successfully!');
     }
 
     /**
@@ -60,8 +57,6 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
-        return response()->json([
-            'success' => true,
-        ]);
+        return redirect()->route('admin.testimonials')->with('success', 'Testimonial removed successfully!');
     }
 }
