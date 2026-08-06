@@ -34,6 +34,8 @@
               <button type="button" class="btn-add-item" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; margin: 0; background: rgba(108, 45, 102, 0.2); border: 1px solid var(--primary-plum); color: var(--text-white);"
                 data-name="{{ $lead->first_name }} {{ $lead->last_name }}"
                 data-subject="{{ $lead->subject }}"
+                data-email="{{ $lead->email }}"
+                data-phone="{{ $lead->phone }}"
                 data-message="{{ $lead->message }}"
                 onclick="openMessageModal(this)">
                 <i class="fas fa-eye"></i> View
@@ -60,7 +62,12 @@
       <i class="fas fa-envelope-open-text"></i>
     </div>
     <h3 id="modal-lead-name" style="text-align: center; margin-bottom: 0.25rem;">Message from Name</h3>
-    <p id="modal-lead-subject" style="text-align: center; color: var(--brand-sunset-orange); font-size: 0.9rem; margin-top: 0; margin-bottom: 1.5rem; font-weight: 500;">Subject</p>
+    <p id="modal-lead-subject" style="text-align: center; color: var(--brand-sunset-orange); font-size: 0.9rem; margin-top: 0; margin-bottom: 1rem; font-weight: 500;">Subject</p>
+    
+    <div style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
+      <div><i class="fas fa-envelope" style="color: var(--text-muted); margin-right: 0.4rem;"></i> <span id="modal-lead-email" style="color: var(--text-white);"></span></div>
+      <div><i class="fas fa-phone-alt" style="color: var(--text-muted); margin-right: 0.4rem;"></i> <span id="modal-lead-phone" style="color: var(--text-white);"></span></div>
+    </div>
     
     <div style="background: var(--surface-light); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
       <p id="modal-lead-message" style="color: var(--text-white); font-size: 0.95rem; line-height: 1.6; margin: 0; white-space: pre-wrap; max-height: 400px; overflow-y: auto;"></p>
@@ -124,11 +131,15 @@ function openMessageModal(button) {
     // Extract data from the button's data attributes
     var name = button.getAttribute('data-name');
     var subject = button.getAttribute('data-subject');
+    var email = button.getAttribute('data-email');
+    var phone = button.getAttribute('data-phone');
     var message = button.getAttribute('data-message');
     
     // Set the data in the modal
     document.getElementById('modal-lead-name').innerText = 'Message from ' + name;
     document.getElementById('modal-lead-subject').innerText = 'Subject: ' + subject;
+    document.getElementById('modal-lead-email').innerText = email;
+    document.getElementById('modal-lead-phone').innerText = phone;
     document.getElementById('modal-lead-message').innerText = message;
     
     // Show the modal
