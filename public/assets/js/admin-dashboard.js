@@ -499,22 +499,10 @@ function saveTestimonials() {
 // AEROVIA MULTIPLE SCENERY BANNER LOGIC
 // ==========================================
 
-const defaultScenery = [
-  { title: "Poland & Czechia", subtitle: "10D/11N Expedition • Oct 15", image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fm=webp&fit=crop&w=800&q=80" },
-  { title: "Ubud, Bali", subtitle: "Cliffside Temples & Sunsets", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fm=webp&fit=crop&w=800&q=80" },
-  { title: "Norway Fjords", subtitle: "Fjord Cruise & Aurora", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fm=webp&fit=crop&w=800&q=80" },
-  { title: "Swiss Alps", subtitle: "Mount Titlis & Lucerne", image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fm=webp&fit=crop&w=800&q=80" },
-  { title: "Japan Kyoto", subtitle: "Cherry Blossom Trail", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fm=webp&fit=crop&w=800&q=80" },
-  { title: "Angkor Wat", subtitle: "Ancient Heritage Trail", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fm=webp&fit=crop&w=800&q=80" }
-];
-
 let sceneryList = [];
 
 function loadSceneryItems() {
-  sceneryList = JSON.parse(localStorage.getItem('aerovia_scenery'));
-  if (!sceneryList || sceneryList.length === 0) {
-    sceneryList = [...defaultScenery];
-  }
+  // Data is fetched from DB in banner-details.blade.php
   renderSceneryItems();
 }
 
@@ -584,6 +572,49 @@ function addNewSceneryItem(title = '', subtitle = '', image = '', rawUrl = '') {
     rawUrl: rawUrl
   });
 
+  renderSceneryItems();
+}
+
+function addMissingTours() {
+  syncSceneryListFromDOM();
+  let added = 0;
+  
+  if (typeof allTours !== 'undefined') {
+    // Build frequency map of titles currently in sceneryList
+    const sceneryTitleCounts = {};
+    sceneryList.forEach(s => {
+      const t = s.title.toLowerCase();
+      sceneryTitleCounts[t] = (sceneryTitleCounts[t] || 0) + 1;
+    });
+
+    allTours.forEach(tour => {
+      const t = tour.title.toLowerCase();
+      if (sceneryTitleCounts[t] > 0) {
+        // This tour is already represented in the scenery list
+        sceneryTitleCounts[t]--;
+      } else {
+        // This tour is missing from the scenery list
+        sceneryList.push({
+          title: tour.title,
+          subtitle: tour.subtitle || '',
+          image: '',
+          rawUrl: ''
+        });
+        added++;
+      }
+    });
+  }
+  
+  if (added === 0) {
+    // Fallback to blank if all tours are already added
+    sceneryList.push({
+      title: 'New Location',
+      subtitle: 'Adventure Description',
+      image: '',
+      rawUrl: ''
+    });
+  }
+  
   renderSceneryItems();
 }
 

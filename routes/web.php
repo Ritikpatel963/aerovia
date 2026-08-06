@@ -26,7 +26,10 @@ Route::get('/', function () {
             ]
         ]);
     }
-    return view('home', compact('testimonials'));
+    $settings = \App\Models\Gallery::pluck('value', 'key')->toArray();
+    $sceneryList = isset($settings['scenery_images']) ? json_decode($settings['scenery_images'], true) : [];
+
+    return view('home', compact('testimonials', 'sceneryList'));
 });
 
 Route::get('/about', function () {

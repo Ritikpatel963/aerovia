@@ -136,7 +136,7 @@
           <div class="form-panel">
             <div class="editor-card-header">
               <h3 class="form-section-title" style="border: none; margin: 0; padding: 0;"><i class="fas fa-mountain"></i> Scenery & Landscapes Section Images</h3>
-              <button type="button" class="btn-add-item" onclick="addNewSceneryItem()" style="margin: 0;"><i class="fas fa-plus"></i> Add Scenery Slide</button>
+              <button type="button" class="btn-add-item" onclick="addMissingTours()" style="margin: 0;"><i class="fas fa-plus"></i> Add Scenery Slide</button>
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 1.5rem;">
               These custom landscape images will show in the infinite marquee slider on the home page.
@@ -165,6 +165,8 @@
 
 @section('scripts')
 <script>
+  const allTours = {!! isset($tours) ? json_encode($tours) : '[]' !!};
+
   function previewMedia(input, previewId) {
     if (input.files && input.files[0]) {
       const url = URL.createObjectURL(input.files[0]);

@@ -44,92 +44,31 @@
 
       <div class="infinite-slider-wrapper">
         <div class="infinite-slider-track">
-          <!-- Card 1: Poland & Czechia -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Poland & Czechia Expedition">
-            <div class="scenery-card-content">
-              <h4>Poland & Czechia</h4>
-              <p>10D/11N Expedition • Oct 15</p>
-            </div>
-          </a>
-
-          <!-- Card 2: Bali -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Bali Retreat">
-            <div class="scenery-card-content">
-              <h4>Ubud, Bali</h4>
-              <p>Cliffside Temples & Sunsets</p>
-            </div>
-          </a>
-
-          <!-- Card 3: Norway -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Norway Fjords">
-            <div class="scenery-card-content">
-              <h4>Norway Fjords</h4>
-              <p>Fjord Cruise & Aurora</p>
-            </div>
-          </a>
-
-          <!-- Card 4: Switzerland -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Swiss Alps">
-            <div class="scenery-card-content">
-              <h4>Swiss Alps</h4>
-              <p>Mount Titlis & Lucerne</p>
-            </div>
-          </a>
-
-          <!-- Card 5: Japan -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Japan">
-            <div class="scenery-card-content">
-              <h4>Japan Kyoto</h4>
-              <p>Cherry Blossom Trail</p>
-            </div>
-          </a>
-
-          <!-- Card 6: Cambodia -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Angkor Wat">
-            <div class="scenery-card-content">
-              <h4>Angkor Wat</h4>
-              <p>Ancient Heritage Trail</p>
-            </div>
-          </a>
-
-          <!-- Clones for Infinite Loop -->
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Poland & Czechia">
-            <div class="scenery-card-content">
-              <h4>Poland & Czechia</h4>
-              <p>10D/11N Expedition • Oct 15</p>
-            </div>
-          </a>
-
-          <a href="{{ url('tour-description') }}" class="scenery-card">
-            <img loading="lazy"
-              src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fm=webp&fit=crop&w=800&q=80"
-              alt="Bali">
-            <div class="scenery-card-content">
-              <h4>Ubud, Bali</h4>
-              <p>Cliffside Temples & Sunsets</p>
-            </div>
-          </a>
+          @if(!empty($sceneryList))
+            @foreach($sceneryList as $scenery)
+            <a href="{{ url('tour-description') }}" class="scenery-card">
+              <img loading="lazy"
+                src="{{ str_starts_with($scenery['image'], 'http') ? $scenery['image'] : asset('storage/' . $scenery['image']) }}"
+                alt="{{ $scenery['title'] }}">
+              <div class="scenery-card-content">
+                <h4>{{ $scenery['title'] }}</h4>
+                <p>{{ $scenery['subtitle'] }}</p>
+              </div>
+            </a>
+            @endforeach
+            <!-- Clones for Infinite Loop -->
+            @foreach($sceneryList as $scenery)
+            <a href="{{ url('tour-description') }}" class="scenery-card">
+              <img loading="lazy"
+                src="{{ str_starts_with($scenery['image'], 'http') ? $scenery['image'] : asset('storage/' . $scenery['image']) }}"
+                alt="{{ $scenery['title'] }}">
+              <div class="scenery-card-content">
+                <h4>{{ $scenery['title'] }}</h4>
+                <p>{{ $scenery['subtitle'] }}</p>
+              </div>
+            </a>
+            @endforeach
+          @endif
         </div>
       </div>
     </section>

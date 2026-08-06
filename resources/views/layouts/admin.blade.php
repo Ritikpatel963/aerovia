@@ -87,6 +87,7 @@
 
   <!-- Separate Admin Dashboard JavaScript -->
   <script src="{{ asset('assets/js/admin-dashboard.js') }}"></script>
+  @yield('scripts')
 </body>
 
 </html>
