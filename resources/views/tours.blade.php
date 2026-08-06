@@ -6,8 +6,10 @@
 @section('content')
     <!-- Hero Card Banner with Background Video -->
     <div class="hero-card-banner">
-      <img src="{{ asset('assets/images/tours-hero.webp') }}" class="hero-image-bg" alt="Hero Background">
-      <div class="hero-img-overlay"></div>
+      <div class="hero-bg-wrapper">
+        <img src="{{ asset('assets/images/tours-hero.webp') }}" class="hero-image-bg" alt="Hero Background">
+        <div class="hero-img-overlay"></div>
+      </div>
 
       <!-- Hero Main Content -->
       <div class="hero-body" style="padding-bottom: 2rem;">

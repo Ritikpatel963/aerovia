@@ -463,7 +463,6 @@ video {
 .hero-card-banner {
   position: relative;
   border-radius: var(--radius-xl);
-  overflow: hidden;
   min-height: 88vh;
   display: flex;
   flex-direction: column;
@@ -473,7 +472,16 @@ video {
   margin-top: 0.75rem;
 }
 
-.hero-video-bg {
+.hero-bg-wrapper {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-video-bg,
+.hero-image-bg {
   position: absolute;
   top: 0;
   left: 0;
@@ -484,7 +492,8 @@ video {
   will-change: transform;
 }
 
-.hero-overlay {
+.hero-overlay,
+.hero-img-overlay {
   position: absolute;
   top: 0;
   left: 0;

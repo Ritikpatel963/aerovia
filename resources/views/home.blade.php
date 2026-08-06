@@ -3,11 +3,13 @@
 @section('content')
     <!-- Hero Card Banner with Background Video -->
     <div class="hero-card-banner">
-      <video autoplay loop muted playsinline class="hero-video-bg" poster="{{ asset('assets/images/video-snapshot.jpg') }}">
-        <source src="{{ asset('assets/videos/Sunset-Banner.mov') }}" type="video/quicktime">
-        <source src="{{ asset('assets/videos/Sunset-Banner.mov') }}" type="video/mp4">
-      </video>
-      <div class="hero-overlay"></div>
+      <div class="hero-bg-wrapper">
+        <video autoplay loop muted playsinline class="hero-video-bg" poster="{{ asset('assets/images/video-snapshot.jpg') }}">
+          <source src="{{ asset('assets/videos/Sunset-Banner.mov') }}" type="video/quicktime">
+          <source src="{{ asset('assets/videos/Sunset-Banner.mov') }}" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+      </div>
 
       <!-- Hero Main Content -->
       <div class="hero-body">
