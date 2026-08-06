@@ -1009,7 +1009,21 @@ html[data-theme="dark"] .dropdown-search-input::placeholder {
 .tour-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(157, 43, 94, 0.4);
+  border-color: var(--star-gold) !important;
+}
+
+.tour-card .tour-price {
+  transition: color 0.3s ease;
+}
+
+.tour-card:hover .tour-price {
+  color: var(--star-gold);
+}
+
+.tour-card:hover .btn-outline {
+  background: var(--btn-gradient);
+  color: #FFFFFF;
+  border-color: transparent;
 }
 
 .tour-card-img {
