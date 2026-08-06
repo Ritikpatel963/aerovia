@@ -5,13 +5,12 @@
 @section('page_subtitle', 'Manage inquiries and contact form submissions')
 
 @section('content')
-<div class="content-card">
-  <div class="card-header">
-    <h3>All Contact Submissions</h3>
-  </div>
-  <div class="card-body">
+<div class="flex-col">
+  <div class="form-panel">
+    <h3 class="form-section-title"><i class="fas fa-address-book"></i> All Contact Submissions</h3>
+    
     @if($leads->count() > 0)
-    <div class="table-responsive">
+    <div class="table-responsive" style="margin-top: 1rem;">
       <table class="admin-table" id="contactLeadsTable">
         <thead>
           <tr>
@@ -32,9 +31,13 @@
             <td>{{ $lead->phone }}</td>
             <td><span class="status-badge status-active">{{ $lead->subject }}</span></td>
             <td>
-              <div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $lead->message }}">
-                {{ $lead->message }}
-              </div>
+              <button type="button" class="btn-add-item" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; margin: 0; background: rgba(108, 45, 102, 0.2); border: 1px solid var(--primary-plum); color: var(--text-white);"
+                data-name="{{ $lead->first_name }} {{ $lead->last_name }}"
+                data-subject="{{ $lead->subject }}"
+                data-message="{{ $lead->message }}"
+                onclick="openMessageModal(this)">
+                <i class="fas fa-eye"></i> View
+              </button>
             </td>
           </tr>
           @endforeach
@@ -47,6 +50,23 @@
       <p>No contact leads found yet.</p>
     </div>
     @endif
+  </div>
+</div>
+
+<!-- Message Modal -->
+<div class="modal-overlay" id="message-modal" style="display: none;">
+  <div class="modal-card" style="max-width: 600px; text-align: left;">
+    <div class="modal-icon" style="color: var(--primary-plum); margin: 0 auto 1rem auto; display: flex; justify-content: center;">
+      <i class="fas fa-envelope-open-text"></i>
+    </div>
+    <h3 id="modal-lead-name" style="text-align: center; margin-bottom: 0.25rem;">Message from Name</h3>
+    <p id="modal-lead-subject" style="text-align: center; color: var(--brand-sunset-orange); font-size: 0.9rem; margin-top: 0; margin-bottom: 1.5rem; font-weight: 500;">Subject</p>
+    
+    <div style="background: var(--surface-light); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+      <p id="modal-lead-message" style="color: var(--text-white); font-size: 0.95rem; line-height: 1.6; margin: 0; white-space: pre-wrap; max-height: 400px; overflow-y: auto;"></p>
+    </div>
+    
+    <button class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;" onclick="closeMessageModal()">Close Message</button>
   </div>
 </div>
 @endsection
@@ -99,5 +119,24 @@ $(document).ready(function() {
         }
     });
 });
+
+function openMessageModal(button) {
+    // Extract data from the button's data attributes
+    var name = button.getAttribute('data-name');
+    var subject = button.getAttribute('data-subject');
+    var message = button.getAttribute('data-message');
+    
+    // Set the data in the modal
+    document.getElementById('modal-lead-name').innerText = 'Message from ' + name;
+    document.getElementById('modal-lead-subject').innerText = 'Subject: ' + subject;
+    document.getElementById('modal-lead-message').innerText = message;
+    
+    // Show the modal
+    document.getElementById('message-modal').style.display = 'flex';
+}
+
+function closeMessageModal() {
+    document.getElementById('message-modal').style.display = 'none';
+}
 </script>
 @endsection
