@@ -4,28 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $testimonials = \App\Models\Testimonial::all();
-    if ($testimonials->isEmpty()) {
-        $testimonials = collect([
-            (object)[
-                'name' => "Sarah Connor",
-                'role' => "Frequent Explorer",
-                'text' => "Aerovia made our trip to Poland & Czechia completely effortless! The custom itinerary was flawless and the tour guide care was exceptional.",
-                'avatar' => "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fm=webp&fit=crop&w=200&q=80"
-            ],
-            (object)[
-                'name' => "Michael Vance",
-                'role' => "Corporate Traveler",
-                'text' => "Our family tour in Norway was unforgettable. Everything from private fjord cruises to luxury lodging was arranged with deep personal care.",
-                'avatar' => "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fm=webp&fit=crop&w=200&q=80"
-            ],
-            (object)[
-                'name' => "David Miller",
-                'role' => "Verified Guest",
-                'text' => "Aerovia's 40+ years heritage shines through in every detail. Their team handled our Schengen visa and flight bookings without a hitch.",
-                'avatar' => "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fm=webp&fit=crop&w=200&q=80"
-            ]
-        ]);
-    }
     $settings = \App\Models\Gallery::pluck('value', 'key')->toArray();
     $sceneryList = isset($settings['scenery_images']) ? json_decode($settings['scenery_images'], true) : [];
 
