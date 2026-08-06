@@ -99,43 +99,49 @@
           <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem;">Please fill out your details
             below:</p>
 
-          <form action="#" method="POST"
-            onsubmit="event.preventDefault(); alert('Thank you for contacting Aerovia! Our team will get back to you shortly.');">
+          @if(session('success'))
+            <div style="background: rgba(37, 211, 102, 0.1); border-left: 4px solid var(--whatsapp-green); padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-sm);">
+              <p style="color: #1c1c1c; font-weight: 500; font-size: 0.95rem; margin: 0;">{{ session('success') }}</p>
+            </div>
+          @endif
+
+          <form action="{{ route('contact.store') }}" method="POST">
+            @csrf
             <div class="form-grid">
               <div class="form-group">
                 <label for="first-name">First Name</label>
-                <input type="text" id="first-name" placeholder="John" required>
+                <input type="text" id="first-name" name="first_name" placeholder="John" required>
               </div>
               <div class="form-group">
                 <label for="last-name">Last Name</label>
-                <input type="text" id="last-name" placeholder="Doe" required>
+                <input type="text" id="last-name" name="last_name" placeholder="Doe" required>
               </div>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" placeholder="john@example.com" required>
+                <input type="email" id="email" name="email" placeholder="john@example.com" required>
               </div>
               <div class="form-group">
                 <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+                <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
               </div>
             </div>
 
             <div class="subject-options">
               <label>Select Subject</label>
               <div class="radio-group">
-                <label class="radio-item"><input type="radio" name="subject" checked> Tour Booking</label>
-                <label class="radio-item"><input type="radio" name="subject"> Visa Assistance</label>
-                <label class="radio-item"><input type="radio" name="subject"> Custom Itinerary</label>
-                <label class="radio-item"><input type="radio" name="subject"> General Inquiry</label>
+                <label class="radio-item"><input type="radio" name="subject" value="Tour Booking" checked> Tour Booking</label>
+                <label class="radio-item"><input type="radio" name="subject" value="Visa Assistance"> Visa Assistance</label>
+                <label class="radio-item"><input type="radio" name="subject" value="Custom Itinerary"> Custom Itinerary</label>
+                <label class="radio-item"><input type="radio" name="subject" value="General Inquiry"> General Inquiry</label>
               </div>
             </div>
 
             <div class="form-group" style="margin-bottom: 2rem;">
               <label for="message">Message</label>
-              <textarea id="message" rows="4" placeholder="Write your message here..." required></textarea>
+              <textarea id="message" name="message" rows="4" placeholder="Write your message here..." required></textarea>
             </div>
 
             <button type="submit" class="btn btn-plum" style="width: 100%; padding: 0.85rem;">Send Message <i

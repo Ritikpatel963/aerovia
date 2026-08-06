@@ -30,6 +30,8 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
+Route::post('/contact', [\App\Http\Controllers\ContactLeadController::class, 'store'])->name('contact.store');
+
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\BannerController;
@@ -60,6 +62,8 @@ Route::prefix('admin')->group(function () {
         // Tour Management
         Route::get('/dashboard', [TourController::class, 'index'])->name('admin.dashboard');
         Route::resource('tours', TourController::class)->except(['index', 'show']);
+
+        Route::get('/contact-leads', [\App\Http\Controllers\Admin\ContactLeadController::class, 'index'])->name('admin.contact-leads');
 
         Route::get('/settings', function () {
             return view('admin.settings');
